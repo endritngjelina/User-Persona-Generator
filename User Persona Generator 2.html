@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Persona Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        .form-section {
+            padding: 40px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .preview-section {
+            padding: 40px;
+            background: white;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .slider-group {
+            margin-bottom: 25px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .slider-value {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            outline: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .persona-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .persona-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .persona-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .persona-name {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .persona-role {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .persona-content {
+            padding: 30px;
+        }
+
+        .persona-section {
+            margin-bottom: 25px;
+        }
+
+        .persona-section h3 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .persona-section h3::before {
+            content: '';
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .persona-quote {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #555;
+            margin: 15px 0;
+        }
+
+        .persona-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .persona-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .persona-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-size: 0.8rem;
+        }
+
+        .tech-proficiency {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .proficiency-bar {
+            width: 100px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .proficiency-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #5a6fd8;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6c757d;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .methodology-info {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .methodology-info h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .methodology-info p {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .demo-grid div {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .demo-grid strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #667eea;
+        }
+
+        .personality-tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .form-section {
+                display: none;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>User Persona Generator Pro</h1>
+            <p>Create comprehensive, research-backed user personas for superior UX design</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <h2 class="section-title">📋 Research Input</h2>
+                
+                <div class="methodology-info">
+                    <h4>Research-Based Approach</h4>
+                    <p>This tool uses established UX research methodologies to generate personas based on demographic data, behavioral patterns, and psychographic insights.</p>
+                </div>
+                
+                <form id="personaForm">
+                    <div class="form-group">
+                        <label for="projectType">Project Type</label>
+                        <select id="projectType" required>
+                            <option value="">Select project type</option>
+                            <option value="mobile-app">Mobile Application</option>
+                            <option value="web-platform">Web Platform</option>
+                            <option value="e-commerce">E-commerce</option>
+                            <option value="saas">SaaS Product</option>
+                            <option value="social-media">Social Media</option>
+                            <option value="fintech">FinTech</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="enterprise">Enterprise Software</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetAudience">Primary Target Audience</label>
+                        <select id="targetAudience" required>
+                            <option value="">Select target audience</option>
+                            <option value="gen-z">Gen Z (18-27)</option>
+                            <option value="millennials">Millennials (28-43)</option>
+                            <option value="gen-x">Gen X (44-59)</option>
+                            <option value="baby-boomers">Baby Boomers (60+)</option>
+                            <option value="professionals">Working Professionals</option>
+                            <option value="students">Students</option>
+                            <option value="parents">Parents</option>
+                            <option value="seniors">Senior Citizens</option>
+                            <option value="entrepreneurs">Entrepreneurs</option>
+                            <option value="creatives">Creative Professionals</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industry">Industry/Domain</label>
+                        <input type="text" id="industry" placeholder="e.g., Healthcare, Finance, Education" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="primaryGoal">Primary User Goal</label>
+                        <textarea id="primaryGoal" placeholder="What is the main thing users want to achieve with your product?" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userPainPoints">Main Pain Points</label>
+                        <textarea id="userPainPoints" placeholder="What frustrations do users currently face?" required></textarea>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <label>Technical Proficiency Level</label>
+                            <span class="slider-value" id="techLevelValue">Intermediate</span>
+                        </div>
+                        <input type="range" id="techLevel" class="slider" min="1" max="5" value="3">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <label>Price Sensitivity</label>
+                            <span class="slider-value" id="priceSensitivityValue">Moderate</span>
+                        </div>
+                        <input type="range" id="priceSensitivity" class="slider" min="1" max="5" value="3">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deviceUsage">Primary Device Usage</label>
+                        <select id="deviceUsage" required>
+                            <option value="">Select primary device</option>
+                            <option value="mobile">Mobile-first</option>
+                            <option value="desktop">Desktop-primary</option>
+                            <option value="tablet">Tablet-preferred</option>
+                            <option value="cross-platform">Cross-platform</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motivations">Key Motivations</label>
+                        <textarea id="motivations" placeholder="What drives users to seek solutions like yours?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brandPreferences">Brand/Design Preferences</label>
+                        <select id="brandPreferences">
+                            <option value="">Select preference style</option>
+                            <option value="minimalist">Minimalist & Clean</option>
+                            <option value="bold">Bold & Vibrant</option>
+                            <option value="professional">Professional & Corporate</option>
+                            <option value="playful">Playful & Creative</option>
+                            <option value="luxury">Premium & Luxury</option>
+                            <option value="accessible">Accessible & Inclusive</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="generate-btn">🎯 Generate Persona</button>
+                </form>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title">👤 Generated Persona</h2>
+                <div id="personaPreview">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👤</div>
+                        <h3>Ready to Create Your Persona</h3>
+                        <p>Fill out the research form to generate a comprehensive user persona based on UX best practices and behavioral psychology.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variable to store current persona
+        let currentPersona = null;
+        
+        // Persona generation data
+        const personaData = {
+            names: {
+                'gen-z': ['Alex Chen', 'Jordan Martinez', 'Taylor Kim', 'Casey Johnson', 'River Patel'],
+                'millennials': ['Sarah Williams', 'Michael Rodriguez', 'Jessica Lee', 'David Brown', 'Amanda Davis'],
+                'gen-x': ['Robert Thompson', 'Lisa Anderson', 'James Wilson', 'Karen Miller', 'Mark Garcia'],
+                'baby-boomers': ['William Johnson', 'Patricia Smith', 'Richard Davis', 'Susan Brown', 'Thomas Wilson'],
+                'professionals': ['Alexandra Bennett', 'Marcus Thompson', 'Sophia Martinez', 'Daniel Kim', 'Rachel Chen'],
+                'students': ['Emma Taylor', 'Connor Walsh', 'Zoe Anderson', 'Lucas Miller', 'Maya Patel'],
+                'parents': ['Jennifer Collins', 'Michael Stevens', 'Lisa Rodriguez', 'Kevin Murphy', 'Sarah Johnson'],
+                'seniors': ['Dorothy Henderson', 'Harold Thompson', 'Margaret Davis', 'Arthur Wilson', 'Helen Garcia'],
+                'entrepreneurs': ['Victoria Chang', 'Alexander Brooks', 'Samantha Lee', 'Jonathan Miller', 'Natalie Kim'],
+                'creatives': ['Isabella Rivera', 'Sebastian Cross', 'Aurora Martinez', 'Phoenix Taylor', 'Sage Anderson']
+            },
+            
+            roles: {
+                'mobile-app': ['Mobile User', 'App Enthusiast', 'Digital Native', 'On-the-go Professional'],
+                'web-platform': ['Web User', 'Digital Professional', 'Online Collaborator', 'Platform User'],
+                'e-commerce': ['Online Shopper', 'Digital Consumer', 'E-commerce User', 'Online Buyer'],
+                'saas': ['Business User', 'SaaS Professional', 'Digital Worker', 'Software User'],
+                'social-media': ['Social Media User', 'Content Creator', 'Digital Communicator', 'Online Networker'],
+                'fintech': ['Financial User', 'Digital Investor', 'Tech-savvy Finance User', 'Modern Banking Customer'],
+                'healthcare': ['Healthcare Consumer', 'Patient', 'Health-conscious User', 'Medical Service User'],
+                'education': ['Learner', 'Student', 'Educational Technology User', 'Knowledge Seeker'],
+                'gaming': ['Gamer', 'Gaming Enthusiast', 'Interactive Entertainment User', 'Digital Player'],
+                'enterprise': ['Enterprise User', 'Business Professional', 'Corporate Software User', 'Workplace Technology User']
+            },
+
+            demographics: {
+                'gen-z': { age: '22', location: 'Austin, TX', education: 'College Student', income: '$25,000' },
+                'millennials': { age: '32', location: 'Seattle, WA', education: 'Bachelor\'s Degree', income: '$75,000' },
+                'gen-x': { age: '48', location: 'Chicago, IL', education: 'Master\'s Degree', income: '$95,000' },
+                'baby-boomers': { age: '65', location: 'Phoenix, AZ', education: 'High School/Some College', income: '$60,000' },
+                'professionals': { age: '35', location: 'San Francisco, CA', education: 'Bachelor\'s/Master\'s', income: '$120,000' },
+                'students': { age: '20', location: 'Boston, MA', education: 'Currently in College', income: '$15,000' },
+                'parents': { age: '38', location: 'Denver, CO', education: 'Bachelor\'s Degree', income: '$85,000' },
+                'seniors': { age: '72', location: 'Miami, FL', education: 'High School', income: '$45,000' },
+                'entrepreneurs': { age: '29', location: 'New York, NY', education: 'MBA', income: '$150,000' },
+                'creatives': { age: '31', location: 'Portland, OR', education: 'Art/Design Degree', income: '$55,000' }
+            }
+        };
+
+        // Tech level descriptions
+        const techLevels = ['Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'];
+        const priceLevels = ['Very High', 'High', 'Moderate', 'Low', 'Very Low'];
+
+        // Update slider values
+        document.getElementById('techLevel').addEventListener('input', function() {
+            document.getElementById('techLevelValue').textContent = techLevels[this.value - 1];
+        });
+
+        document.getElementById('priceSensitivity').addEventListener('input', function() {
+            document.getElementById('priceSensitivityValue').textContent = priceLevels[this.value - 1];
+        });
+
+        // Form submission
+        document.getElementById('personaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generatePersona();
+        });
+
+        function generatePersona() {
+            const formData = {
+                projectType: document.getElementById('projectType').value,
+                targetAudience: document.getElementById('targetAudience').value,
+                industry: document.getElementById('industry').value,
+                primaryGoal: document.getElementById('primaryGoal').value,
+                userPainPoints: document.getElementById('userPainPoints').value,
+                techLevel: parseInt(document.getElementById('techLevel').value),
+                priceSensitivity: parseInt(document.getElementById('priceSensitivity').value),
+                deviceUsage: document.getElementById('deviceUsage').value,
+                motivations: document.getElementById('motivations').value,
+                brandPreferences: document.getElementById('brandPreferences').value
+            };
+
+            // Generate persona
+            const name = getRandomFromArray(personaData.names[formData.targetAudience] || personaData.names['professionals']);
+            const role = getRandomFromArray(personaData.roles[formData.projectType] || personaData.roles['web-platform']);
+            const demographics = personaData.demographics[formData.targetAudience] || personaData.demographics['professionals'];
+            
+            const persona = {
+                name: name,
+                role: role,
+                demographics: demographics,
+                avatar: name.charAt(0),
+                bio: generateBio(formData, demographics),
+                goals: generateGoals(formData),
+                frustrations: generateFrustrations(formData),
+                needs: generateNeeds(formData),
+                quote: generateQuote(formData),
+                techProficiency: generateTechProficiency(formData.techLevel),
+                behaviors: generateBehaviors(formData),
+                personality: generatePersonality(formData)
+            };
+            
+            // Store current persona
+            currentPersona = persona;
+
+            renderPersona(persona);
+        }
+
+        function getRandomFromArray(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function generateBio(formData, demographics) {
+            const templates = [
+                `A ${demographics.age}-year-old professional living in ${demographics.location}. Works in ${formData.industry} and values efficiency and reliability in digital products.`,
+                `${demographics.age} years old, based in ${demographics.location}. Has a ${demographics.education} and works in the ${formData.industry} sector. Seeks solutions that align with their busy lifestyle.`,
+                `Located in ${demographics.location}, this ${demographics.age}-year-old professional is highly engaged with ${formData.industry} technology and prioritizes user-friendly experiences.`
+            ];
+            return getRandomFromArray(templates);
+        }
+
+        function generateGoals(formData) {
+            const baseGoals = [formData.primaryGoal];
+            const additionalGoals = [
+                'Save time on daily tasks',
+                'Make informed decisions quickly',
+                'Stay organized and efficient',
+                'Connect with relevant information',
+                'Achieve better work-life balance'
+            ];
+            
+            return baseGoals.concat(getRandomFromArray(additionalGoals.slice(0, 2)));
+        }
+
+        function generateFrustrations(formData) {
+            const baseFrustrations = formData.userPainPoints ? [formData.userPainPoints] : [];
+            const additionalFrustrations = [
+                'Complex interfaces that waste time',
+                'Lack of mobile optimization',
+                'Poor customer support',
+                'Hidden costs and fees',
+                'Slow loading times',
+                'Inconsistent user experience'
+            ];
+            
+            return baseFrustrations.concat(getRandomFromArray(additionalFrustrations.slice(0, 2)));
+        }
+
+        function generateNeeds(formData) {
+            const needs = [
+                'Intuitive and clean interface design',
+                'Fast and reliable performance',
+                'Clear information architecture',
+                'Responsive customer support',
+                'Transparent pricing',
+                'Mobile-friendly experience'
+            ];
+            
+            if (formData.deviceUsage === 'mobile') {
+                needs.unshift('Mobile-first design approach');
+            }
+            
+            return needs.slice(0, 4);
+        }
+
+        function generateQuote(formData) {
+            const quotes = [
+                "I need solutions that work seamlessly with my workflow.",
+                "If it's not intuitive, I don't have time for it.",
+                "I value products that respect my time and intelligence.",
+                "Good design should be invisible - I just want things to work.",
+                "I'm willing to pay for quality, but I need to see the value clearly."
+            ];
+            return getRandomFromArray(quotes);
+        }
+
+        function generateTechProficiency(level) {
+            const proficiencies = {
+                'Mobile Apps': Math.min(level + Math.floor(Math.random() * 2), 5),
+                'Web Platforms': level,
+                'Social Media': Math.min(level + 1, 5),
+                'Cloud Services': Math.max(level - 1, 1),
+                'Data Security': Math.max(level - 1, 1)
+            };
+            return proficiencies;
+        }
+
+        function generateBehaviors(formData) {
+            const behaviors = [
+                'Researches products thoroughly before purchasing',
+                'Reads reviews and seeks recommendations',
+                'Prefers self-service options when available',
+                'Uses multiple devices throughout the day',
+                'Values privacy and data security'
+            ];
+            
+            if (formData.priceSensitivity >= 4) {
+                behaviors.push('Compares prices across multiple platforms');
+            }
+            
+            return behaviors.slice(0, 4);
+        }
+
+        function generatePersonality(formData) {
+            const traits = ['Goal-oriented', 'Analytical', 'Efficient', 'Tech-savvy', 'Quality-focused'];
+            return traits.slice(0, 3);
+        }
+
+        function renderPersona(persona) {
+            const previewContainer = document.getElementById('personaPreview');
+            
+            previewContainer.innerHTML = `
+                <div class="persona-card">
+                    <div class="persona-header">
+                        <div class="persona-avatar">${persona.avatar}</div>
+                        <div class="persona-name">${persona.name}</div>
+                        <div class="persona-role">${persona.role}</div>
+                    </div>
+                    
+                    <div class="persona-content">
+                        <div class="persona-section">
+                            <h3>📊 Demographics</h3>
+                            <div class="demo-grid">
+                                <div><strong>Age:</strong> ${persona.demographics.age}</div>
+                                <div><strong>Location:</strong> ${persona.demographics.location}</div>
+                                <div><strong>Education:</strong> ${persona.demographics.education}</div>
+                                <div><strong>Income:</strong> ${persona.demographics.income}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>👤 Biography</h3>
+                            <p>${persona.bio}</p>
+                        </div>
+                        
+                        <div class="persona-quote">
+                            "${persona.quote}"
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>🎯 Goals</h3>
+                            <ul class="persona-list">
+                                ${persona.goals.map(goal => `<li>${goal}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>😤 Frustrations</h3>
+                            <ul class="persona-list">
+                                ${persona.frustrations.map(frustration => `<li>${frustration}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>✅ Needs</h3>
+                            <ul class="persona-list">
+                                ${persona.needs.map(need => `<li>${need}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>💻 Technical Proficiency</h3>
+                            ${Object.entries(persona.techProficiency).map(([tech, level]) => `
+                                <div class="tech-proficiency">
+                                    <span>${tech}</span>
+                                    <div class="proficiency-bar">
+                                        <div class="proficiency-fill" style="width: ${level * 20}%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>🔍 Behaviors</h3>
+                            <ul class="persona-list">
+                                ${persona.behaviors.map(behavior => `<li>${behavior}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="persona-section">
+                            <h3>🧠 Personality Traits</h3>
+                            <div style="margin-top: 10px;">
+                                ${persona.personality.map(trait => `
+                                    <span class="personality-tag">${trait}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="action-btn" onclick="generateNewPersona()">🔄 Generate New</button>
+                    <button class="action-btn" onclick="exportPersona()">📤 Export JSON</button>
+                    <button class="action-btn primary" onclick="printPersona()">🖨️ Print Persona</button>
+                </div>
+            `;
+        }
+
+        function generateNewPersona() {
+            generatePersona();
+        }
+
+        function exportPersona() {
+            if (!currentPersona) {
+                alert('Please generate a persona first!');
+                return;
+            }
+            
+            // Format persona data for export
+            const exportData = {
+                ...currentPersona,
+                generatedAt: new Date().toISOString(),
+                tool: "User Persona Generator Pro"
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentPersona.name.replace(/\s+/g, '_')}_persona.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function printPersona() {
+            window.print();
+        }
+
+        // Advanced features for Meta-level demonstration
+
+        // Analytics simulation
+        function trackPersonaGeneration() {
+            const timestamp = new Date().toISOString();
+            const sessionData = {
+                timestamp,
+                projectType: document.getElementById('projectType').value,
+                targetAudience: document.getElementById('targetAudience').value,
+                industry: document.getElementById('industry').value
+            };
+            
+            // In a real application, this would send to analytics
+            console.log('Analytics Event: Persona Generated', sessionData);
+        }
+
+        // Form validation with UX best practices
+        function validateForm() {
+            const requiredFields = ['projectType', 'targetAudience', 'industry', 'primaryGoal', 'userPainPoints', 'deviceUsage'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e9ecef';
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Enhanced form submission with validation
+        document.getElementById('personaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Add loading state
+            const submitBtn = document.querySelector('.generate-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '🔄 Generating...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call delay for realistic UX
+            setTimeout(() => {
+                generatePersona();
+                trackPersonaGeneration();
+                
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Smooth scroll to results
+                document.querySelector('.preview-section').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 1500);
+        });
+
+        // Real-time form feedback
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.style.borderColor = '#e74c3c';
+                } else {
+                    this.style.borderColor = '#27ae60';
+                }
+            });
+        });
+
+        // Auto-save form data (simulated)
+        let autoSaveTimeout;
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    // In a real app, this would save to localStorage or server
+                    console.log('Auto-saved form data');
+                }, 2000);
+            });
+        });
+
+        // Keyboard shortcuts for power users
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'Enter':
+                        e.preventDefault();
+                        document.getElementById('personaForm').dispatchEvent(new Event('submit'));
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        printPersona();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        exportPersona();
+                        break;
+                }
+            }
+        });
+
+        // Accessibility improvements
+        document.querySelectorAll('.slider').forEach(slider => {
+            slider.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    setTimeout(() => {
+                        this.dispatchEvent(new Event('input'));
+                    }, 0);
+                }
+            });
+        });
+
+        // Progressive enhancement
+        if ('serviceWorker' in navigator) {
+            // In a real app, this would register a service worker for offline functionality
+            console.log('Service Worker support detected');
+        }
+
+        // Initialize tooltips for better UX
+        function initializeTooltips() {
+            const tooltips = {
+                'techLevel': 'Rate the technical proficiency of your target users from beginner to expert',
+                'priceSensitivity': 'How sensitive are your users to pricing? Higher sensitivity means more price-conscious',
+                'brandPreferences': 'What design aesthetic appeals most to your target audience?'
+            };
+
+            Object.entries(tooltips).forEach(([id, text]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.setAttribute('title', text);
+                    element.setAttribute('aria-label', text);
+                }
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTooltips();
+            
+            // Show welcome animation
+            document.querySelector('.container').style.opacity = '0';
+            document.querySelector('.container').style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                document.querySelector('.container').style.transition = 'all 0.6s ease';
+                document.querySelector('.container').style.opacity = '1';
+                document.querySelector('.container').style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Error handling and user feedback
+        window.addEventListener('error', function(e) {
+            console.error('Application error:', e.error);
+            
+            // In a production app, this would report to error tracking service
+            const errorMessage = document.createElement('div');
+            errorMessage.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #e74c3c;
+                color: white;
+                padding: 15px;
+                border-radius: 5px;
+                z-index: 1000;
+                max-width: 300px;
+            `;
+            errorMessage.textContent = 'An error occurred. Please refresh the page and try again.';
+            document.body.appendChild(errorMessage);
+            
+            setTimeout(() => {
+                document.body.removeChild(errorMessage);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
