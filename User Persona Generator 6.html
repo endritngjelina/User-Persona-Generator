@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Persona Generator - Professional UX Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .persona-section {
+            flex: 1;
+            padding: 40px;
+            background: white;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.6s forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f0f8ff;
+        }
+
+        .checkbox-item input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .persona-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .persona-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .persona-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .persona-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .persona-title {
+            font-size: 1.1rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .persona-section {
+            margin-bottom: 25px;
+        }
+
+        .persona-section h3 {
+            color: #0078d4;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .persona-section h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #0078d4;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .persona-content {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #0078d4;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #495057;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+            position: relative;
+        }
+
+        .quote::before {
+            content: '"';
+            font-size: 4rem;
+            color: #28a745;
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            opacity: 0.3;
+        }
+
+        .demographics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .demo-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+        }
+
+        .demo-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .demo-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, #6f42c1 0%, #007bff 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0078d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; background: white; }
+            .form-section { display: none; }
+            .persona-section { padding: 20px; }
+            .print-btn, .export-btn { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .demographics {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        .advanced-options {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .advanced-options h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .history-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .history-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .history-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>User Persona Generator</h1>
+            <p>Create comprehensive, data-driven user personas for your UX design projects</p>
+            <span class="feature-badge">Professional UX Tool</span>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <form id="personaForm">
+                    <div class="form-group">
+                        <label for="projectType">Project Type <span class="required">*</span></label>
+                        <select id="projectType" required>
+                            <option value="">Select project type...</option>
+                            <option value="mobile-app">Mobile Application</option>
+                            <option value="web-app">Web Application</option>
+                            <option value="website">Website</option>
+                            <option value="desktop-software">Desktop Software</option>
+                            <option value="e-commerce">E-commerce Platform</option>
+                            <option value="saas">SaaS Product</option>
+                            <option value="enterprise">Enterprise Solution</option>
+                        </select>
+                        <div class="error-message" id="projectTypeError">Please select a project type</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetAudience">Primary Target Audience <span class="required">*</span></label>
+                        <select id="targetAudience" required>
+                            <option value="">Select target audience...</option>
+                            <option value="millennials">Millennials (25-40)</option>
+                            <option value="gen-z">Gen Z (18-24)</option>
+                            <option value="gen-x">Gen X (41-55)</option>
+                            <option value="baby-boomers">Baby Boomers (56+)</option>
+                            <option value="professionals">Working Professionals</option>
+                            <option value="students">Students</option>
+                            <option value="seniors">Senior Citizens</option>
+                            <option value="parents">Parents</option>
+                        </select>
+                        <div class="error-message" id="targetAudienceError">Please select a target audience</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industryDomain">Industry Domain <span class="required">*</span></label>
+                        <select id="industryDomain" required>
+                            <option value="">Select industry...</option>
+                            <option value="technology">Technology</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="finance">Finance & Banking</option>
+                            <option value="education">Education</option>
+                            <option value="retail">Retail & E-commerce</option>
+                            <option value="travel">Travel & Hospitality</option>
+                            <option value="entertainment">Entertainment & Media</option>
+                            <option value="automotive">Automotive</option>
+                            <option value="real-estate">Real Estate</option>
+                            <option value="food-beverage">Food & Beverage</option>
+                        </select>
+                        <div class="error-message" id="industryDomainError">Please select an industry domain</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="primaryGoal">Primary User Goal <span class="required">*</span></label>
+                        <textarea id="primaryGoal" placeholder="What is the main thing users want to accomplish? (e.g., Find and book affordable flights, Manage personal finances, Learn new skills online)" required></textarea>
+                        <div class="error-message" id="primaryGoalError">Please describe the primary user goal</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Key Pain Points (Select all that apply)</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain1" value="Complex navigation">
+                                <label for="pain1">Complex navigation</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain2" value="Slow loading times">
+                                <label for="pain2">Slow loading times</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain3" value="Too many steps">
+                                <label for="pain3">Too many steps</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain4" value="Lack of personalization">
+                                <label for="pain4">Lack of personalization</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain5" value="Poor mobile experience">
+                                <label for="pain5">Poor mobile experience</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain6" value="Information overload">
+                                <label for="pain6">Information overload</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain7" value="Security concerns">
+                                <label for="pain7">Security concerns</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain8" value="High costs">
+                                <label for="pain8">High costs</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="techComfort">Technology Comfort Level <span class="required">*</span></label>
+                        <select id="techComfort" required>
+                            <option value="">Select comfort level...</option>
+                            <option value="beginner">Beginner - Needs guidance</option>
+                            <option value="intermediate">Intermediate - Comfortable with basics</option>
+                            <option value="advanced">Advanced - Power user</option>
+                            <option value="expert">Expert - Early adopter</option>
+                        </select>
+                        <div class="error-message" id="techComfortError">Please select a technology comfort level</div>
+                    </div>
+
+                    <div class="advanced-options">
+                        <h3>Advanced Options</h3>
+                        <div class="form-group">
+                            <label for="deviceUsage">Primary Device Usage</label>
+                            <select id="deviceUsage">
+                                <option value="mobile-first">Mobile-first</option>
+                                <option value="desktop-primary">Desktop primary</option>
+                                <option value="tablet-focused">Tablet focused</option>
+                                <option value="multi-device">Multi-device user</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userEnvironment">Usage Environment</label>
+                            <select id="userEnvironment">
+                                <option value="office">Office/Workplace</option>
+                                <option value="home">Home</option>
+                                <option value="mobile">On-the-go</option>
+                                <option value="mixed">Mixed environments</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-btn">Generate Professional Persona</button>
+                </form>
+                
+                <div class="history-panel">
+                    <h3>Recent Personas</h3>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+
+            <div class="persona-section">
+                <div id="loadingState" class="loading hidden">
+                    Generating your persona...
+                </div>
+                
+                <div id="personaResult" class="hidden">
+                    <div class="persona-card">
+                        <div class="persona-header">
+                            <div class="persona-avatar" id="personaAvatar"></div>
+                            <div class="persona-name" id="personaName"></div>
+                            <div class="persona-title" id="personaTitle"></div>
+                        </div>
+
+                        <div class="demographics" id="demographics"></div>
+
+                        <div class="persona-section">
+                            <h3>Primary Goals</h3>
+                            <div class="persona-content" id="goals"></div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>Key Frustrations</h3>
+                            <div class="persona-content" id="frustrations"></div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>User Quote</h3>
+                            <div class="quote" id="userQuote"></div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>Needs & Motivations</h3>
+                            <div class="persona-content" id="needs"></div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>Technology Profile</h3>
+                            <div class="persona-content" id="techProfile"></div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>Usage Context</h3>
+                            <div class="persona-content" id="usageContext"></div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="print-btn" onclick="window.print()">🖨️ Print Persona</button>
+                            <button class="export-btn" onclick="exportPersona()">💾 Export as JSON</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const personaData = {
+            names: {
+                'millennials': ['Sarah Chen', 'Michael Rodriguez', 'Ashley Thompson', 'David Kim', 'Jessica Martinez'],
+                'gen-z': ['Zoe Parker', 'Tyler Johnson', 'Maya Patel', 'Alex Rivera', 'Emma Davis'],
+                'gen-x': ['Robert Smith', 'Linda Wilson', 'Mark Anderson', 'Patricia Brown', 'James Taylor'],
+                'baby-boomers': ['Margaret Johnson', 'Richard Williams', 'Barbara Davis', 'William Miller', 'Dorothy Garcia'],
+                'professionals': ['Alexandra Foster', 'Jonathan Blake', 'Rachel Wong', 'Christopher Lee', 'Samantha Clark'],
+                'students': ['Jordan Mitchell', 'Chloe Adams', 'Ryan Cooper', 'Madison Scott', 'Ethan Lewis'],
+                'seniors': ['Helen Roberts', 'Frank Anderson', 'Ruth Thompson', 'George Martinez', 'Joan Wilson'],
+                'parents': ['Lisa Palmer', 'Kevin Thompson', 'Michelle Rodriguez', 'Andrew Davis', 'Nicole Johnson']
+            },
+            
+            titles: {
+                'technology': ['Software Engineer', 'Product Manager', 'UX Designer', 'Data Analyst', 'IT Consultant'],
+                'healthcare': ['Nurse Practitioner', 'Medical Assistant', 'Healthcare Administrator', 'Physical Therapist', 'Pharmacist'],
+                'finance': ['Financial Advisor', 'Investment Analyst', 'Accountant', 'Banking Associate', 'Insurance Agent'],
+                'education': ['High School Teacher', 'College Professor', 'School Administrator', 'Education Coordinator', 'Academic Advisor'],
+                'retail': ['Store Manager', 'Sales Associate', 'Buyer', 'Visual Merchandiser', 'Customer Service Rep'],
+                'travel': ['Travel Agent', 'Hotel Manager', 'Tour Guide', 'Flight Attendant', 'Event Planner'],
+                'entertainment': ['Content Creator', 'Marketing Coordinator', 'Graphic Designer', 'Social Media Manager', 'Writer'],
+                'automotive': ['Sales Representative', 'Service Advisor', 'Automotive Technician', 'Fleet Manager', 'Parts Specialist'],
+                'real-estate': ['Real Estate Agent', 'Property Manager', 'Mortgage Broker', 'Appraiser', 'Leasing Consultant'],
+                'food-beverage': ['Restaurant Manager', 'Chef', 'Food Service Worker', 'Nutritionist', 'Catering Coordinator']
+            },
+
+            quotes: {
+                'mobile-app': [
+                    "I need apps that work seamlessly and don't waste my time with complicated interfaces.",
+                    "If an app doesn't load within 3 seconds, I'm moving on to something else.",
+                    "I want personalized experiences that actually understand what I'm looking for."
+                ],
+                'web-app': [
+                    "The interface should be intuitive enough that I don't need a manual to figure it out.",
+                    "I expect the same level of functionality whether I'm on my laptop or phone.",
+                    "Speed and reliability are non-negotiable for the tools I use daily."
+                ],
+                'website': [
+                    "I should be able to find what I'm looking for within a few clicks.",
+                    "Beautiful design is nice, but functionality and clear information are what keep me coming back.",
+                    "I appreciate websites that remember my preferences and make return visits effortless."
+                ],
+                'e-commerce': [
+                    "I want detailed product information and honest reviews before making a purchase.",
+                    "The checkout process should be quick and secure - no unnecessary steps.",
+                    "Good customer service and easy returns are just as important as good products."
+                ],
+                'saas': [
+                    "I need software that integrates with my existing tools and doesn't create extra work.",
+                    "The onboarding process should be smooth and get me to value quickly.",
+                    "Regular updates and responsive support are essential for my business."
+                ],
+                'enterprise': [
+                    "Scalability and security are my top priorities when choosing enterprise solutions.",
+                    "We need software that can adapt to our complex workflows without extensive customization.",
+                    "Integration with our existing systems is non-negotiable."
+                ],
+                'desktop-software': [
+                    "I need powerful features that help me be more productive without slowing down my machine.",
+                    "The interface should be clean and not get in the way of my work.",
+                    "Regular updates that actually improve the experience are important to me."
+                ]
+            }
+        };
+
+        const demographicRanges = {
+            'millennials': { age: '28-35', income: '$45,000-85,000', education: 'Bachelor\'s Degree' },
+            'gen-z': { age: '19-24', income: '$25,000-45,000', education: 'Some College' },
+            'gen-x': { age: '42-52', income: '$55,000-95,000', education: 'Bachelor\'s/Master\'s' },
+            'baby-boomers': { age: '58-68', income: '$40,000-75,000', education: 'High School/Bachelor\'s' },
+            'professionals': { age: '28-45', income: '$60,000-120,000', education: 'Bachelor\'s/Master\'s' },
+            'students': { age: '18-25', income: '$15,000-35,000', education: 'Currently Enrolled' },
+            'seniors': { age: '65+', income: '$35,000-65,000', education: 'High School/Some College' },
+            'parents': { age: '30-45', income: '$50,000-90,000', education: 'Bachelor\'s Degree' }
+        };
+
+        let savedPersonas = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize form validation
+            const form = document.getElementById('personaForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    generatePersona();
+                }
+            });
+
+            // Load saved personas
+            loadSavedPersonas();
+        });
+
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = [
+                'projectType', 'targetAudience', 'industryDomain', 
+                'primaryGoal', 'techComfort'
+            ];
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                const errorElement = document.getElementById(`${field}Error`);
+                
+                if (!element.value) {
+                    element.style.borderColor = '#dc3545';
+                    errorElement.style.display = 'block';
+                    isValid = false;
+                } else {
+                    element.style.borderColor = '#28a745';
+                    errorElement.style.display = 'none';
+                }
+            });
+            
+            return isValid;
+        }
+
+        function generatePersona() {
+            // Show loading state
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('personaResult').classList.add('hidden');
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Simulate processing time for professional feel
+            setTimeout(() => {
+                const formData = {
+                    projectType: document.getElementById('projectType').value,
+                    targetAudience: document.getElementById('targetAudience').value,
+                    industryDomain: document.getElementById('industryDomain').value,
+                    primaryGoal: document.getElementById('primaryGoal').value,
+                    techComfort: document.getElementById('techComfort').value,
+                    deviceUsage: document.getElementById('deviceUsage').value,
+                    userEnvironment: document.getElementById('userEnvironment').value,
+                    painPoints: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value)
+                };
+
+                createPersona(formData);
+                
+                // Hide loading and show result
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('personaResult').classList.remove('hidden');
+                
+                // Save the generated persona
+                savePersona(formData);
+                
+                // Animate the persona card
+                animatePersonaCard();
+                
+                // Show success notification
+                showNotification('Persona generated successfully!', 'success');
+            }, 1500);
+        }
+
+        function createPersona(data) {
+            // Generate persona details
+            const names = personaData.names[data.targetAudience] || ['Alex Johnson'];
+            const name = names[Math.floor(Math.random() * names.length)];
+            
+            const titles = personaData.titles[data.industryDomain] || ['Professional'];
+            const title = titles[Math.floor(Math.random() * titles.length)];
+            
+            const demographics = demographicRanges[data.targetAudience] || { age: '25-45', income: '$40,000-80,000', education: 'Bachelor\'s Degree' };
+            
+            const quotes = personaData.quotes[data.projectType] || ["I want technology that makes my life easier, not more complicated."];
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+            // Update persona display
+            document.getElementById('personaAvatar').textContent = name.split(' ').map(n => n[0]).join('');
+            document.getElementById('personaName').textContent = name;
+            document.getElementById('personaTitle').textContent = title;
+            
+            // Demographics
+            document.getElementById('demographics').innerHTML = `
+                <div class="demo-item">
+                    <div class="demo-label">Age</div>
+                    <div class="demo-value">${demographics.age}</div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-label">Income</div>
+                    <div class="demo-value">${demographics.income}</div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-label">Education</div>
+                    <div class="demo-value">${demographics.education}</div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-label">Tech Level</div>
+                    <div class="demo-value">${data.techComfort.charAt(0).toUpperCase() + data.techComfort.slice(1)}</div>
+                </div>
+            `;
+
+            // Goals
+            document.getElementById('goals').innerHTML = `
+                <p><strong>Primary:</strong> ${data.primaryGoal}</p>
+                <p><strong>Secondary:</strong> Achieve tasks efficiently with minimal learning curve and maximum reliability.</p>
+                <p><strong>Long-term:</strong> Build confidence in using technology to improve personal and professional productivity.</p>
+            `;
+
+            // Frustrations
+            const frustrationText = data.painPoints.length > 0 ? 
+                data.painPoints.join(', ') + '. These issues significantly impact user satisfaction and task completion rates.' :
+                'General usability issues, unclear navigation, and systems that don\'t meet expectations.';
+            
+            document.getElementById('frustrations').innerHTML = `
+                <p><strong>Key Pain Points:</strong> ${frustrationText}</p>
+                <p><strong>Emotional Impact:</strong> Feels frustrated when technology doesn't work as expected, leading to decreased trust and engagement.</p>
+            `;
+
+            // Quote
+            document.getElementById('userQuote').textContent = quote;
+
+            // Needs
+            document.getElementById('needs').innerHTML = `
+                <p><strong>Functional Needs:</strong> Clear navigation, fast performance, reliable functionality, and intuitive design patterns.</p>
+                <p><strong>Emotional Needs:</strong> Confidence in using the system, feeling valued as a user, and trust in the platform's security and reliability.</p>
+                <p><strong>Social Needs:</strong> Ability to share experiences, get support when needed, and feel part of a community.</p>
+            `;
+
+            // Technology Profile
+            const techProfiles = {
+                'beginner': 'Prefers simple, guided experiences with clear instructions. Uses basic features and relies on help documentation. Appreciates tutorials and onboarding flows.',
+                'intermediate': 'Comfortable with standard functionality and willing to explore new features. Uses keyboard shortcuts occasionally and appreciates efficiency improvements.',
+                'advanced': 'Seeks powerful features and customization options. Uses advanced shortcuts and expects sophisticated functionality. Values integration with other tools.',
+                'expert': 'Early adopter who embraces cutting-edge features. Provides feedback and expects beta access. Influences others\' technology choices.'
+            };
+
+            document.getElementById('techProfile').innerHTML = `
+                <p><strong>Comfort Level:</strong> ${data.techComfort.charAt(0).toUpperCase() + data.techComfort.slice(1)}</p>
+                <p><strong>Behavior:</strong> ${techProfiles[data.techComfort]}</p>
+                <p><strong>Primary Device:</strong> ${data.deviceUsage.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+            `;
+
+            // Usage Context
+            const contextDescriptions = {
+                'office': 'Primarily uses the system during work hours in a focused environment with reliable internet and larger screens.',
+                'home': 'Uses the system in a relaxed environment, often multitasking with other activities and family responsibilities.',
+                'mobile': 'Frequently uses the system while commuting or traveling, often with limited time and varying connectivity.',
+                'mixed': 'Switches between different environments and devices throughout the day, requiring seamless synchronization.'
+            };
+
+            document.getElementById('usageContext').innerHTML = `
+                <p><strong>Environment:</strong> ${data.userEnvironment.charAt(0).toUpperCase() + data.userEnvironment.slice(1)}</p>
+                <p><strong>Context:</strong> ${contextDescriptions[data.userEnvironment]}</p>
+                <p><strong>Usage Patterns:</strong> Peak usage during ${getPeakUsageTime(data.userEnvironment)}, with sessions lasting ${getSessionDuration(data.targetAudience)}.</p>
+            `;
+        }
+
+        function getPeakUsageTime(environment) {
+            const times = {
+                'office': 'business hours (9 AM - 5 PM)',
+                'home': 'evenings and weekends',
+                'mobile': 'commute times and lunch breaks',
+                'mixed': 'throughout the day with varying intensity'
+            };
+            return times[environment] || 'business hours';
+        }
+
+        function getSessionDuration(audience) {
+            const durations = {
+                'millennials': '15-30 minutes',
+                'gen-z': '5-15 minutes',
+                'gen-x': '20-45 minutes',
+                'baby-boomers': '30-60 minutes',
+                'professionals': '30-60 minutes',
+                'students': '10-25 minutes',
+                'seniors': '45-90 minutes',
+                'parents': '10-20 minutes'
+            };
+            return durations[audience] || '15-30 minutes';
+        }
+
+        // Add export functionality
+        function exportPersona() {
+            const personaData = {
+                name: document.getElementById('personaName').textContent,
+                title: document.getElementById('personaTitle').textContent,
+                demographics: document.getElementById('demographics').innerText,
+                goals: document.getElementById('goals').innerText,
+                frustrations: document.getElementById('frustrations').innerText,
+                quote: document.getElementById('userQuote').textContent,
+                needs: document.getElementById('needs').innerText,
+                techProfile: document.getElementById('techProfile').innerText,
+                usageContext: document.getElementById('usageContext').innerText
+            };
+
+            const jsonData = JSON.stringify(personaData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${personaData.name.replace(' ', '_')}_persona.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Persona exported successfully!', 'success');
+        }
+
+        function savePersona(formData) {
+            const currentPersona = {
+                name: document.getElementById('personaName').textContent,
+                title: document.getElementById('personaTitle').textContent,
+                timestamp: new Date().toISOString(),
+                formData: formData
+            };
+            
+            savedPersonas.push(currentPersona);
+            if (savedPersonas.length > 5) {
+                savedPersonas.shift(); // Keep only last 5
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('personaHistory', JSON.stringify(savedPersonas));
+            
+            // Update history panel
+            updatePersonaHistory();
+        }
+
+        function loadSavedPersonas() {
+            const saved = localStorage.getItem('personaHistory');
+            if (saved) {
+                savedPersonas = JSON.parse(saved);
+                updatePersonaHistory();
+            }
+        }
+
+        function updatePersonaHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (savedPersonas.length === 0) {
+                historyList.innerHTML = '<div class="history-item">No personas generated yet</div>';
+                return;
+            }
+            
+            savedPersonas.slice().reverse().forEach((persona, index) => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <strong>${persona.name}</strong> - ${persona.title}
+                    <div style="font-size: 0.8rem; color: #6c757d;">
+                        ${new Date(persona.timestamp).toLocaleString()}
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    loadPersona(persona);
+                });
+                
+                historyList.appendChild(item);
+            });
+        }
+
+        function loadPersona(persona) {
+            // Fill form with saved data
+            document.getElementById('projectType').value = persona.formData.projectType;
+            document.getElementById('targetAudience').value = persona.formData.targetAudience;
+            document.getElementById('industryDomain').value = persona.formData.industryDomain;
+            document.getElementById('primaryGoal').value = persona.formData.primaryGoal;
+            document.getElementById('techComfort').value = persona.formData.techComfort;
+            document.getElementById('deviceUsage').value = persona.formData.deviceUsage;
+            document.getElementById('userEnvironment').value = persona.formData.userEnvironment;
+            
+            // Clear all checkboxes first
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Check selected pain points
+            persona.formData.painPoints.forEach(pain => {
+                const checkbox = Array.from(document.querySelectorAll('input[type="checkbox"]')).find(cb => cb.value === pain);
+                if (checkbox) checkbox.checked = true;
+            });
+            
+            // Regenerate the persona
+            generatePersona();
+        }
+
+        function animatePersonaCard() {
+            const card = document.querySelector('.persona-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter to generate persona
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                if (validateForm()) {
+                    generatePersona();
+                }
+            }
+            
+            // Ctrl/Cmd + P to print
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p' && !document.getElementById('personaResult').classList.contains('hidden')) {
+                e.preventDefault();
+                window.print();
+            }
+            
+            // Ctrl/Cmd + E to export
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e' && !document.getElementById('personaResult').classList.contains('hidden')) {
+                e.preventDefault();
+                exportPersona();
+            }
+        });
+    </script>
+</body>
+</html>
