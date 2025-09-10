@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Persona Generator - Professional UX Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0078d4, #106ebe);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50px, -50px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .form-section {
+            padding: 40px;
+            background: #fafafa;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .preview-section {
+            padding: 40px;
+            background: white;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            border-color: #0078d4;
+            background: #f8f9ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            accent-color: #0078d4;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #0078d4, #106ebe);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 120, 212, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .persona-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .persona-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .persona-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .persona-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .persona-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .persona-title {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .persona-body {
+            padding: 30px;
+        }
+
+        .persona-section {
+            margin-bottom: 25px;
+        }
+
+        .persona-section h3 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            border-left: 4px solid #0078d4;
+            padding-left: 15px;
+        }
+
+        .persona-quote {
+            background: #f8f9ff;
+            border-left: 4px solid #0078d4;
+            padding: 20px;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #555;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+
+        .persona-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #0078d4;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .print-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .print-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .export-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .actions {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .insights-panel {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .insight-metric {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .form-section,
+            .actions {
+                display: none;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 User Persona Generator</h1>
+            <p>Create comprehensive, research-backed user personas for strategic UX design</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <form id="personaForm">
+                    <div class="form-group">
+                        <label for="projectName">Project/Product Name *</label>
+                        <input type="text" id="projectName" name="projectName" required placeholder="e.g., Microsoft Teams Mobile App">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetAudience">Primary Target Audience *</label>
+                        <select id="targetAudience" name="targetAudience" required>
+                            <option value="">Select target audience</option>
+                            <option value="students">Students & Educators</option>
+                            <option value="professionals">Business Professionals</option>
+                            <option value="developers">Developers & Tech Workers</option>
+                            <option value="creatives">Designers & Creatives</option>
+                            <option value="healthcare">Healthcare Workers</option>
+                            <option value="retail">Retail & E-commerce</option>
+                            <option value="seniors">Senior Citizens</option>
+                            <option value="parents">Parents & Families</option>
+                            <option value="entrepreneurs">Entrepreneurs</option>
+                            <option value="remote">Remote Workers</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industryContext">Industry/Domain Context</label>
+                        <input type="text" id="industryContext" name="industryContext" placeholder="e.g., Enterprise Collaboration, EdTech, FinTech">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productType">Product/Service Type *</label>
+                        <select id="productType" name="productType" required>
+                            <option value="">Select product type</option>
+                            <option value="web_app">Web Application</option>
+                            <option value="mobile_app">Mobile Application</option>
+                            <option value="desktop">Desktop Software</option>
+                            <option value="saas">SaaS Platform</option>
+                            <option value="ecommerce">E-commerce Site</option>
+                            <option value="enterprise">Enterprise Tool</option>
+                            <option value="gaming">Gaming Platform</option>
+                            <option value="social">Social Platform</option>
+                            <option value="productivity">Productivity Tool</option>
+                            <option value="iot">IoT/Smart Device</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Key Pain Points Users Face (select all that apply):</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain1" name="painPoints" value="complex_navigation">
+                                <label for="pain1">Complex Navigation</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain2" name="painPoints" value="slow_performance">
+                                <label for="pain2">Slow Performance</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain3" name="painPoints" value="lack_accessibility">
+                                <label for="pain3">Poor Accessibility</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain4" name="painPoints" value="information_overload">
+                                <label for="pain4">Information Overload</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain5" name="painPoints" value="mobile_issues">
+                                <label for="pain5">Mobile Usability Issues</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pain6" name="painPoints" value="integration_problems">
+                                <label for="pain6">Integration Problems</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Primary User Goals (select all that apply):</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="goal1" name="userGoals" value="efficiency">
+                                <label for="goal1">Increase Efficiency</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="goal2" name="userGoals" value="collaboration">
+                                <label for="goal2">Better Collaboration</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="goal3" name="userGoals" value="learning">
+                                <label for="goal3">Learning & Development</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="goal4" name="userGoals" value="cost_savings">
+                                <label for="goal4">Cost Savings</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="goal5" name="userGoals" value="automation">
+                                <label for="goal5">Process Automation</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="goal6" name="userGoals" value="insights">
+                                <label for="goal6">Data Insights</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="techComfort">User Tech Comfort Level *</label>
+                        <select id="techComfort" name="techComfort" required>
+                            <option value="">Select comfort level</option>
+                            <option value="beginner">Beginner - Needs guidance</option>
+                            <option value="intermediate">Intermediate - Comfortable with basics</option>
+                            <option value="advanced">Advanced - Power user</option>
+                            <option value="expert">Expert - Technical specialist</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deviceUsage">Primary Device Usage *</label>
+                        <select id="deviceUsage" name="deviceUsage" required>
+                            <option value="">Select primary device</option>
+                            <option value="mobile_first">Mobile-First</option>
+                            <option value="desktop_primary">Desktop Primary</option>
+                            <option value="tablet_focused">Tablet Focused</option>
+                            <option value="multi_device">Multi-Device User</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalContext">Additional Context/Requirements</label>
+                        <textarea id="additionalContext" name="additionalContext" placeholder="Any specific requirements, constraints, or additional context about your users..."></textarea>
+                    </div>
+
+                    <button type="submit" class="generate-btn">🚀 Generate User Persona</button>
+                </form>
+            </div>
+
+            <div class="preview-section">
+                <div id="personaPreview">
+                    <div style="text-align: center; padding: 60px 20px; color: #666;">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">👤</div>
+                        <h3>Ready to Create Your User Persona?</h3>
+                        <p style="margin-top: 10px;">Fill out the form to generate a comprehensive, research-backed user persona that will guide your UX design decisions.</p>
+                        
+                        <div style="margin-top: 40px; text-align: left;">
+                            <h4 style="color: #333; margin-bottom: 15px;">✨ What You'll Get:</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 5px;">📋 Detailed demographic profile</li>
+                                <li style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 5px;">🎯 Goals and motivations</li>
+                                <li style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 5px;">😤 Pain points and frustrations</li>
+                                <li style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 5px;">💬 Authentic user quotes</li>
+                                <li style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 5px;">📱 Technology preferences</li>
+                                <li style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 5px;">📊 Behavioral insights</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const personaTemplates = {
+            students: {
+                names: ['Alex Chen', 'Maya Patel', 'Jordan Williams', 'Zoe Martinez'],
+                titles: ['Computer Science Student', 'Graduate Researcher', 'Design Student', 'MBA Candidate'],
+                ages: [19, 22, 20, 25],
+                quotes: [
+                    "I need tools that work seamlessly across all my devices - from lecture hall to library to dorm room.",
+                    "Time is everything when you're juggling coursework, part-time work, and social life.",
+                    "I want technology that enhances my learning, not complicates it."
+                ]
+            },
+            professionals: {
+                names: ['Sarah Johnson', 'Michael Rodriguez', 'Emily Chang', 'David Thompson'],
+                titles: ['Senior Marketing Manager', 'Operations Director', 'Project Lead', 'Business Analyst'],
+                ages: [32, 38, 29, 35],
+                quotes: [
+                    "I need efficient solutions that help me deliver results faster without sacrificing quality.",
+                    "Integration with our existing workflow is non-negotiable.",
+                    "ROI and measurable outcomes drive every decision I make."
+                ]
+            },
+            developers: {
+                names: ['Alex Kumar', 'Jessica Liu', 'Marcus Brown', 'Nina Kowalski'],
+                titles: ['Full-Stack Developer', 'DevOps Engineer', 'Senior Software Engineer', 'Tech Lead'],
+                ages: [28, 31, 34, 29],
+                quotes: [
+                    "Developer experience is everything - if it's not intuitive, I won't use it.",
+                    "I need powerful tools that don't get in the way of my workflow.",
+                    "Documentation and API quality make or break adoption for our team."
+                ]
+            },
+            creatives: {
+                names: ['Sophia Design', 'Lucas Art', 'Mia Creative', 'Ryan Visual'],
+                titles: ['UX Designer', 'Creative Director', 'Brand Designer', 'Visual Artist'],
+                ages: [27, 33, 25, 30],
+                quotes: [
+                    "Beautiful, intuitive design isn't optional - it's essential to my creative process.",
+                    "I need tools that inspire creativity, not limit it.",
+                    "Collaboration features are crucial when working with diverse creative teams."
+                ]
+            }
+        };
+
+        const painPointDescriptions = {
+            complex_navigation: "struggles with confusing menu structures and unclear user flows",
+            slow_performance: "gets frustrated with loading times and system lag",
+            lack_accessibility: "faces barriers due to poor accessibility implementation",
+            information_overload: "feels overwhelmed by too much information at once",
+            mobile_issues: "encounters problems when using mobile devices",
+            integration_problems: "struggles with connecting to existing tools and workflows"
+        };
+
+        const goalDescriptions = {
+            efficiency: "wants to complete tasks faster and with less effort",
+            collaboration: "seeks better ways to work with team members",
+            learning: "aims to develop new skills and knowledge",
+            cost_savings: "looks for solutions that reduce expenses",
+            automation: "wants to automate repetitive tasks",
+            insights: "needs better data and analytics to make decisions"
+        };
+
+        function generatePersona(formData) {
+            const audience = formData.targetAudience;
+            const template = personaTemplates[audience] || personaTemplates.professionals;
+            
+            const randomIndex = Math.floor(Math.random() * template.names.length);
+            const name = template.names[randomIndex];
+            const title = template.titles[randomIndex];
+            const age = template.ages[randomIndex];
+            const quote = template.quotes[Math.floor(Math.random() * template.quotes.length)];
+
+            const selectedPains = Array.from(document.querySelectorAll('input[name="painPoints"]:checked'))
+                .map(cb => painPointDescriptions[cb.value]);
+            
+            const selectedGoals = Array.from(document.querySelectorAll('input[name="userGoals"]:checked'))
+                .map(cb => goalDescriptions[cb.value]);
+
+            const persona = {
+                name: name,
+                title: title,
+                age: age,
+                avatar: getAvatarEmoji(audience),
+                demographics: generateDemographics(formData, age),
+                goals: selectedGoals.length > 0 ? selectedGoals : generateDefaultGoals(audience),
+                frustrations: selectedPains.length > 0 ? selectedPains : generateDefaultFrustrations(audience),
+                quote: `"${quote}"`,
+                techProfile: generateTechProfile(formData),
+                needs: generateNeeds(formData),
+                behaviors: generateBehaviors(formData),
+                context: formData.additionalContext || generateDefaultContext(audience)
+            };
+
+            return persona;
+        }
+
+        function getAvatarEmoji(audience) {
+            const avatars = {
+                students: '🎓',
+                professionals: '💼',
+                developers: '💻',
+                creatives: '🎨',
+                healthcare: '⚕️',
+                retail: '🛍️',
+                seniors: '👴',
+                parents: '👨‍👩‍👧‍👦',
+                entrepreneurs: '🚀',
+                remote: '🏠'
+            };
+            return avatars[audience] || '👤';
+        }
+
+        function generateDemographics(formData, age) {
+            const locations = ['Seattle, WA', 'San Francisco, CA', 'Austin, TX', 'New York, NY', 'Chicago, IL', 'Boston, MA'];
+            const education = ['Bachelor\'s Degree', 'Master\'s Degree', 'PhD', 'High School', 'Associates Degree'];
+            
+            return {
+                age: age,
+                location: locations[Math.floor(Math.random() * locations.length)],
+                education: education[Math.floor(Math.random() * education.length)],
+                experience: `${Math.floor(Math.random() * 15) + 1} years in ${formData.industryContext || 'their field'}`
+            };
+        }
+
+        function generateDefaultGoals(audience) {
+            const goalSets = {
+                students: ['Complete assignments efficiently', 'Collaborate with classmates', 'Access resources easily'],
+                professionals: ['Increase productivity', 'Improve team collaboration', 'Achieve measurable results'],
+                developers: ['Write better code faster', 'Streamline deployment process', 'Maintain code quality'],
+                creatives: ['Express creativity freely', 'Collaborate with diverse teams', 'Deliver stunning visuals']
+            };
+            return goalSets[audience] || goalSets.professionals;
+        }
+
+        function generateDefaultFrustrations(audience) {
+            const frustrationSets = {
+                students: ['Slow wifi on campus', 'Complex assignment submission systems', 'Lack of mobile optimization'],
+                professionals: ['Too many meetings', 'Disconnected tools', 'Slow approval processes'],
+                developers: ['Poor documentation', 'Unreliable APIs', 'Outdated development tools'],
+                creatives: ['Limited creative freedom', 'Restrictive file formats', 'Poor color accuracy']
+            };
+            return frustrationSets[audience] || frustrationSets.professionals;
+        }
+
+        function generateTechProfile(formData) {
+            const comfortLevels = {
+                beginner: 'Prefers simple, guided interfaces with clear instructions',
+                intermediate: 'Comfortable with standard features but needs support for advanced tasks',
+                advanced: 'Expects powerful features and customization options',
+                expert: 'Demands cutting-edge functionality and technical flexibility'
+            };
+
+            const devicePrefs = {
+                mobile_first: 'Primarily uses smartphone for most tasks',
+                desktop_primary: 'Prefers desktop/laptop for productivity work',
+                tablet_focused: 'Uses tablet as primary computing device',
+                multi_device: 'Seamlessly switches between multiple devices'
+            };
+
+            return {
+                comfort: comfortLevels[formData.techComfort] || comfortLevels.intermediate,
+                devices: devicePrefs[formData.deviceUsage] || devicePrefs.multi_device
+            };
+        }
+
+        function generateNeeds(formData) {
+            const needTypes = {
+                web_app: ['Fast loading times', 'Cross-browser compatibility', 'Intuitive navigation'],
+                mobile_app: ['Offline functionality', 'Touch-friendly interface', 'Battery efficiency'],
+                desktop: ['Keyboard shortcuts', 'Multiple window support', 'File system integration'],
+                saas: ['Scalability', 'Data security', 'API access'],
+                enterprise: ['Single sign-on', 'Admin controls', 'Compliance features']
+            };
+            return needTypes[formData.productType] || needTypes.web_app;
+        }
+
+        function generateBehaviors(formData) {
+            return [
+                'Checks product reviews before making decisions',
+                'Prefers self-service options over contacting support',
+                'Values recommendations from peers and colleagues',
+                'Expects consistent experience across all touchpoints'
+            ];
+        }
+
+        function generateDefaultContext(audience) {
+            const contexts = {
+                students: 'Often works in shared spaces with varying internet connectivity',
+                professionals: 'Balances multiple projects while managing team responsibilities',
+                developers: 'Works in agile environment with tight deadlines and changing requirements',
+                creatives: 'Collaborates with clients and teams across different time zones'
+            };
+            return contexts[audience] || contexts.professionals;
+        }
+
+        function renderPersona(persona, formData) {
+            return `
+                <div class="persona-card show">
+                    <div class="persona-header">
+                        <div class="persona-avatar">${persona.avatar}</div>
+                        <div class="persona-name">${persona.name}</div>
+                        <div class="persona-title">${persona.title}</div>
+                    </div>
+                    
+                    <div class="persona-body">
+                        <div class="insights-panel">
+                            <h3 style="margin-bottom: 15px;">📊 Key Insights</h3>
+                            <div class="insight-metric">Age: ${persona.demographics.age}</div>
+                            <div class="insight-metric">Tech Level: ${formData.techComfort}</div>
+                            <div class="insight-metric">Device: ${formData.deviceUsage.replace('_', ' ')}</div>
+                            <div class="insight-metric">Industry: ${formData.industryContext || 'General'}</div>
+                        </div>
+
+                        <div class="persona-quote">
+                            ${persona.quote}
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>👤 Demographics</h3>
+                            <p><strong>Age:</strong> ${persona.demographics.age} years old</p>
+                            <p><strong>Location:</strong> ${persona.demographics.location}</p>
+                            <p><strong>Education:</strong> ${persona.demographics.education}</p>
+                            <p><strong>Experience:</strong> ${persona.demographics.experience}</p>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>🎯 Goals & Motivations</h3>
+                            <ul style="padding-left: 20px;">
+                                ${persona.goals.map(goal => `<li style="margin-bottom: 8px;">${goal}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>😤 Pain Points & Frustrations</h3>
+                            <ul style="padding-left: 20px;">
+                                ${persona.frustrations.map(frustration => `<li style="margin-bottom: 8px;">${frustration}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>💻 Technology Profile</h3>
+                            <p><strong>Comfort Level:</strong> ${persona.techProfile.comfort}</p>
+                            <p><strong>Device Usage:</strong> ${persona.techProfile.devices}</p>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>✅ Key Needs</h3>
+                            <div class="persona-tags">
+                                ${persona.needs.map(need => `<span class="tag">${need}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>📱 Behavioral Patterns</h3>
+                            <ul style="padding-left: 20px;">
+                                ${persona.behaviors.map(behavior => `<li style="margin-bottom: 8px;">${behavior}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>🏢 Context & Environment</h3>
+                            <p>${persona.context}</p>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>📋 Design Recommendations</h3>
+                            <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; border-left: 4px solid #0078d4;">
+                                <ul style="padding-left: 20px; margin: 0;">
+                                    <li style="margin-bottom: 8px;">Prioritize ${persona.needs[0].toLowerCase()} in the user interface</li>
+                                    <li style="margin-bottom: 8px;">Design for ${formData.deviceUsage.replace('_', ' ')} usage patterns</li>
+                                    <li style="margin-bottom: 8px;">Consider ${formData.techComfort} user capabilities in feature complexity</li>
+                                    <li style="margin-bottom: 8px;">Address ${persona.frustrations[0].toLowerCase()} through thoughtful UX design</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="print-btn" onclick="printPersona()">🖨️ Print Persona</button>
+                        <button class="export-btn" onclick="exportPersona()">📄 Export as PDF</button>
+                        <button class="export-btn" onclick="exportJSON()" style="background: #6f42c1;">📊 Export Data</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let currentPersona = null;
+        let currentFormData = null;
+
+        document.getElementById('personaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Validate required fields
+            const requiredFields = ['projectName', 'targetAudience', 'productType', 'techComfort', 'deviceUsage'];
+            const missingFields = requiredFields.filter(field => !data[field]);
+            
+            if (missingFields.length > 0) {
+                alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+                return;
+            }
+            
+            currentFormData = data;
+            currentPersona = generatePersona(data);
+            
+            const preview = document.getElementById('personaPreview');
+            preview.innerHTML = renderPersona(currentPersona, data);
+            
+            // Add smooth scroll to preview
+            preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        function printPersona() {
+            window.print();
+        }
+
+        function exportPersona() {
+            // Create a clean version for PDF export
+            const printWindow = window.open('', '_blank');
+            const personaHTML = document.getElementById('personaPreview').innerHTML;
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>User Persona - ${currentPersona.name}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', sans-serif; margin: 20px; color: #333; }
+                        .persona-card { border: 1px solid #ddd; border-radius: 10px; overflow: hidden; }
+                        .persona-header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 30px; text-align: center; }
+                        .persona-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 15px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+                        .persona-name { font-size: 1.5rem; font-weight: bold; margin-bottom: 5px; }
+                        .persona-title { font-size: 1rem; opacity: 0.9; }
+                        .persona-body { padding: 30px; }
+                        .persona-section { margin-bottom: 20px; }
+                        .persona-section h3 { color: #333; font-size: 1.1rem; margin-bottom: 10px; border-left: 4px solid #0078d4; padding-left: 15px; }
+                        .persona-quote { background: #f8f9ff; border-left: 4px solid #0078d4; padding: 15px; font-style: italic; margin: 15px 0; }
+                        .tag { background: #e3f2fd; color: #0078d4; padding: 4px 8px; border-radius: 15px; font-size: 0.8rem; margin: 2px; display: inline-block; }
+                        .insights-panel { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+                        .insight-metric { background: rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 5px; margin: 3px; display: inline-block; font-weight: 600; font-size: 0.9rem; }
+                        .actions { display: none; }
+                        ul { margin: 10px 0; }
+                        li { margin-bottom: 5px; }
+                    </style>
+                </head>
+                <body>${personaHTML}</body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        function exportJSON() {
+            if (!currentPersona || !currentFormData) {
+                alert('Please generate a persona first');
+                return;
+            }
+            
+            const exportData = {
+                generatedAt: new Date().toISOString(),
+                projectName: currentFormData.projectName,
+                persona: currentPersona,
+                formInputs: currentFormData
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `${currentPersona.name.replace(/\s+/g, '_')}_persona.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Add form validation and UX enhancements
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+                this.parentElement.style.transition = 'all 0.3s ease';
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add progress tracking
+        const form = document.getElementById('personaForm');
+        const requiredInputs = form.querySelectorAll('input[required], select[required]');
+        
+        function updateProgress() {
+            const filledRequiredFields = Array.from(requiredInputs).filter(input => input.value.trim() !== '').length;
+            const progress = (filledRequiredFields / requiredInputs.length) * 100;
+            
+            // Update button text based on progress
+            const button = form.querySelector('.generate-btn');
+            if (progress === 100) {
+                button.textContent = '🚀 Generate User Persona';
+                button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+            } else {
+                button.textContent = `📝 Complete Form (${Math.round(progress)}%)`;
+                button.style.background = 'linear-gradient(135deg, #6c757d, #5a6268)';
+            }
+        }
+
+        requiredInputs.forEach(input => {
+            input.addEventListener('input', updateProgress);
+            input.addEventListener('change', updateProgress);
+        });
+
+        // Initialize progress
+        updateProgress();
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'p':
+                        e.preventDefault();
+                        if (currentPersona) printPersona();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        if (currentPersona) exportJSON();
+                        break;
+                    case 'Enter':
+                        if (e.target.tagName !== 'TEXTAREA') {
+                            e.preventDefault();
+                            form.dispatchEvent(new Event('submit'));
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Add tooltips for better UX
+        const tooltips = {
+            'projectName': 'Enter the name of your product or project for context',
+            'targetAudience': 'Select the primary user group you\'re designing for',
+            'industryContext': 'Specify the industry or domain (optional)',
+            'productType': 'Choose the type of product you\'re building',
+            'techComfort': 'Select your users\' general comfort level with technology',
+            'deviceUsage': 'Choose the primary device your users will use',
+            'additionalContext': 'Add any specific requirements or constraints'
+        };
+
+        Object.entries(tooltips).forEach(([id, tooltip]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.title = tooltip;
+                element.setAttribute('data-tooltip', tooltip);
+            }
+        });
+    </script>
+</body>
+</html>
